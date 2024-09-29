@@ -172,11 +172,6 @@ components:
           enum: [male, female, unknown]
           example: female
           description: Patient's sex.
-        race:
-          type: string
-          example: Asian
-          enum: [Asian, Black, Hispanic, NativeAmerican, White, Other, Unknown]
-          description: Patient's race.
         contactPhone:
           type: string
           pattern: '^\+?[1-9]\d{1,14}$'
@@ -193,7 +188,6 @@ components:
         - lastName
         - ssn
         - sex
-        - race
 
     PatientInput:
       type: object
@@ -217,11 +211,6 @@ components:
           enum: [male, female, other, unknown]
           example: male
           description: Patient's sex.
-        race:
-          type: string
-          enum: [Asian, Black, Hispanic, NativeAmerican, White, Other, Unknown]
-          example: Asian
-          description: Patient's race.
         contactPhone:
           type: string
           pattern: '^\+?[1-9]\d{1,14}$'
@@ -237,7 +226,6 @@ components:
         - lastName
         - ssn
         - sex
-        - race
   examples:
     patient1:
       description: first patient example
@@ -247,7 +235,6 @@ components:
         lastName: Krivosheev
         ssn: 123-45-6789
         sex: male
-        race: White
     twoPatients:
       description: two patients
       value:
@@ -256,13 +243,11 @@ components:
           lastName: Krivosheev
           ssn: 123-45-6789
           sex: male
-          race: White
         - id: "2"
           firstName: John
           lastName: Addams
           ssn: 123-45-6780
           sex: male
-          race: White
     patientNoId:
       description: first patient without id
       value:
@@ -271,4 +256,3 @@ components:
         lastName: Krivosheev
         ssn: 123-45-6789
         sex: male
-        race: White
