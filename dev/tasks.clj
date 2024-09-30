@@ -7,24 +7,25 @@
             [com.biffweb.tasks.lazy.com.biffweb.config :as config]))
 
 
-(def config (delay (config/use-aero-config {:biff.config/skip-validation true})))
-
-(defn hello
-  "Says 'Hello'"
-  []
-  (println "Hello"))
+(def config (delay (config/use-aero-config {:biff.config/skip-validation true
+                                            :profile "dev"
+                                            :skip-validation true})))
 
 (defn start-postgres []
   (try
     (shell {:out nil} "docker inspect postgres")
     (catch Exception e
       (shell "docker pull postgres")))
+  (println " here!!!!!!!!!")
   (apply shell
          (concat ["docker" "run" "--rm"]
                  (:example/docker-postgres-args @config)
                  ["-v" (str (.getAbsolutePath (io/file "storage/postgres"))
                             ":/var/lib/postgresql/data")
-                  "postgres"])))
+                  "postgres"]))
+
+  (println " here!!!!!!!!!")
+  )
 
 (defn dev
   "Starts the app locally.
@@ -50,9 +51,9 @@
         (System/exit 1))
       (when-not (fs/exists? "config.env")
         (run-task "generate-config"))
-      (when (fs/exists? "package.json")
+      #_(when (fs/exists? "package.json")
         (shell "npm install"))
-      (future (run-task "css" "--watch"))
+      #_(future (run-task "css" "--watch"))
       (future (start-postgres))
       (spit ".nrepl-port" port)
       ((requiring-resolve (symbol (str main-ns) "-main"))))))
@@ -60,7 +61,8 @@
 ;; Tasks should be vars (#'hello instead of hello) so that `clj -M:dev help` can
 ;; print their docstrings.
 (def custom-tasks
-  {"hello" #'hello
-   "dev"   #'dev})
+  {"dev"   #'dev})
 
-(def tasks (merge tasks/tasks custom-tasks))
+(def tasks (merge (assoc tasks/tasks
+                          "css" (fn [& a] nil)
+                          "install-tailwind" (fn [& a] nil)) custom-tasks))

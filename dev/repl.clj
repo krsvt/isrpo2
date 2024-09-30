@@ -30,14 +30,6 @@
 (defn get-context []
   (biff/merge-context @main/system))
 
-(defn add-fixtures []
-  (let [{:keys [example/ds] :as ctx} (get-context)
-        user-id (random-uuid)]
-    (jdbc/execute! ds ["INSERT INTO users (id, email, foo) VALUES (?, ?, ?)"
-                       user-id "a@example.com" "Some Value"])
-    (jdbc/execute! ds ["INSERT INTO message (id, user_id, text) VALUES (?, ?, ?)"
-                       (random-uuid) user-id "hello there"])))
-
 (defn reset-db! []
   (let [{:keys [example/ds]} (get-context)]
     (jdbc/execute! ds [(str/join
@@ -53,10 +45,7 @@
   (let [prod-config (biff/use-aero-config {:biff.config/profile "prod"})
         dev-config  (biff/use-aero-config {:biff.config/profile "dev"})
         ;; Add keys for any other secrets you've added to resources/config.edn
-        secret-keys [:biff.middleware/cookie-secret
-                     :biff/jwt-secret
-                     :postmark/api-key
-                     :recaptcha/secret-key
+        secret-keys [
                      ; ...
                      ]
         get-secrets (fn [{:keys [biff/secret] :as config}]
@@ -78,22 +67,12 @@
   ;; you edit the seed data, you can reset the database by calling reset-db!
   ;; (DON'T do that in prod) and calling add-fixtures again.
   (reset-db!)
-  (add-fixtures)
-
-  ;; Create a user
-  (let [{:keys [example/ds] :as ctx} (get-context)]
-    (jdbc/execute! ds (util-pg/new-user-statement "hello@example.com")))
 
   ;; Query the database
-  (let [{:keys [example/ds] :as ctx} (get-context)]
-    (jdbc/execute! ds ["SELECT * FROM users"]))
+  (let [{:keys [biff/ds] :as ctx} (get-context)]
+    (jdbc/execute! ds ["SELECT * FROM patient"]))
 
   ;; Update an existing user's email address
-  (let [{:keys [example/ds] :as ctx} (get-context)]
-    (jdbc/execute! ds ["UPDATE users SET email = ? WHERE email = ?"
-                       "new.address@example.com"
-                       "hello@example.com"]))
-
   (sort (keys (get-context)))
 
   ;; Check the terminal for output.

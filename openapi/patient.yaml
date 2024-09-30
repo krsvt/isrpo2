@@ -8,6 +8,10 @@ tags:
   - name: patient-crud
     description: Patient CRUD
 
+servers:
+  - url: http://localhost:8080
+    description: Local server 2
+
 paths:
   /api/patient:
     get:
@@ -43,8 +47,8 @@ paths:
         content:
           application/json:
             examples:
-              patient1:
-                $ref: "#/components/examples/patient1"
+              patientNoId:
+                $ref: "#/components/examples/patientNoId"
             schema:
               $ref: "#/components/schemas/PatientInput"
       responses:
@@ -235,6 +239,8 @@ components:
         lastName: Krivosheev
         ssn: 123-45-6789
         sex: male
+        contactPhone: "+79999999999"
+        email: a@example.com
     twoPatients:
       description: two patients
       value:
@@ -243,16 +249,21 @@ components:
           lastName: Krivosheev
           ssn: 123-45-6789
           sex: male
+          contactPhone: "+79999999999"
+          email: a@example.com
         - id: "2"
           firstName: John
           lastName: Addams
           ssn: 123-45-6780
           sex: male
+          contactPhone: "+79999999990"
+          email: b@example.com
     patientNoId:
       description: first patient without id
       value:
-        id: "1"
         firstName: Svyat
         lastName: Krivosheev
         ssn: 123-45-6789
         sex: male
+        contactPhone: "+79999999999"
+        email: a@example.com

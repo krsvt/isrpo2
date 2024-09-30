@@ -41,15 +41,14 @@
   {:biff/modules #'modules
    :biff/merge-context-fn identity
    :biff/handler #'handler
-   :biff.beholder/on-save #'on-save
-   :example/chat-clients (atom #{})})
+   :biff.beholder/on-save #'on-save })
 
 (defonce system (atom {}))
 
 (defn use-postgres [{:keys [biff/secret] :as ctx}]
   (let [ds (jdbc/get-datasource (secret :example/postgres-url))]
     (jdbc/execute! ds [(slurp (io/resource "migrations.sql"))])
-    (assoc ctx :example/ds ds)))
+    (assoc ctx :biff/ds ds)))
 
 (def components
   [biff/use-aero-config
@@ -61,6 +60,7 @@
    biff/use-beholder])
 
 (defn start []
+  (println " here ")
   (let [new-system (reduce (fn [system component]
                              (log/info "starting:" (str component))
                              (component system))

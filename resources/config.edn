@@ -1,13 +1,12 @@
 ;; See https://github.com/juxt/aero and https://biffweb.com/docs/api/utilities/#use-aero-config.
-;; #biff/env and #biff/secret will load values from the environment and from config.env.
 {:biff/base-url #profile {:prod #join ["https://" #biff/env DOMAIN] :default "http://localhost:8080"}
  :biff/host     #profile {:dev "0.0.0.0"
                           :default "localhost"}
  :biff/port     8080
 
- :example/docker-postgres-args ["-e" "POSTGRES_DB=main"
-                                "-e" "POSTGRES_USER=user"
-                                "-e" "POSTGRES_PASSWORD=abc123"
+ :example/docker-postgres-args ["-e" "POSTGRES_DB=postgres"
+                                "-e" "POSTGRES_USER=admin"
+                                "-e" "POSTGRES_PASSWORD=admin"
                                 "-p" "5432:5432"]
  :example/postgres-url         #profile {:prod #biff/secret "PROD_POSTGRES_URL"
                                          :default #biff/secret "DEV_POSTGRES_URL"}
@@ -18,11 +17,11 @@
  :biff/jwt-secret               #biff/secret JWT_SECRET
  :biff.refresh/enabled          #profile {:dev true :default false}
 
- :postmark/api-key #biff/secret POSTMARK_API_KEY
- :postmark/from    #biff/env POSTMARK_FROM
+ ;; :postmark/api-key #biff/secret POSTMARK_API_KEY
+ ;; :postmark/from    #biff/env POSTMARK_FROM
 
- :recaptcha/secret-key #biff/secret RECAPTCHA_SECRET_KEY
- :recaptcha/site-key   #biff/env RECAPTCHA_SITE_KEY
+ ;; :recaptcha/secret-key #biff/secret RECAPTCHA_SECRET_KEY
+ ;; :recaptcha/site-key   #biff/env RECAPTCHA_SITE_KEY
 
  :biff.nrepl/port #or [#biff/env NREPL_PORT "7888"]
  :biff.nrepl/args ["--port" #ref [:biff.nrepl/port]
@@ -48,3 +47,4 @@
  ;; Uncomment this line if you have any ssh-related problems:
  ;; :biff.tasks/skip-ssh-agent true
  }
+

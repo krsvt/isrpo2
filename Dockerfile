@@ -10,9 +10,10 @@ ENV TAILWIND_VERSION=v3.2.4
 RUN apt-get update && apt-get install -y \
   curl default-jre \
   && rm -rf /var/lib/apt/lists/*
-RUN curl -L -o /usr/local/bin/tailwindcss \
-  https://github.com/tailwindlabs/tailwindcss/releases/download/$TAILWIND_VERSION/tailwindcss-linux-x64 \
-  && chmod +x /usr/local/bin/tailwindcss
+
+# RUN curl -L -o /usr/local/bin/tailwindcss \
+#   https://github.com/tailwindlabs/tailwindcss/releases/download/$TAILWIND_VERSION/tailwindcss-linux-x64 \
+#   && chmod +x /usr/local/bin/tailwindcss
 
 WORKDIR /app
 COPY src ./src
@@ -21,9 +22,9 @@ COPY resources ./resources
 COPY deps.edn .
 
 RUN clj -M:dev uberjar && cp target/jar/app.jar . && rm -r target
-RUN rm -r /usr/local/bin/tailwindcss src dev resources deps.edn
+RUN rm -rf /usr/local/bin/tailwindcss src dev resources deps.edn
 
 EXPOSE 8080
 
-ENV BIFF_PROFILE=prod
+ENV BIFF_PROFILE=dev
 CMD ["/usr/bin/java", "-XX:-OmitStackTraceInFastThrow", "-XX:+CrashOnOutOfMemoryError", "-jar", "app.jar"]

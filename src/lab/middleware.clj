@@ -2,6 +2,7 @@
   (:require [com.biffweb :as biff]
             [muuntaja.middleware :as muuntaja]
             [ring.middleware.anti-forgery :as csrf]
+            [ring.middleware.cors :refer [wrap-cors] :as cors]
             [ring.middleware.defaults :as rd]))
 
 ;; Stick this function somewhere in your middleware stack below if you want to
@@ -25,6 +26,10 @@
       biff/wrap-session
       muuntaja/wrap-params
       muuntaja/wrap-format
+      (#(wrap-cors %
+                  :access-control-allow-origin [#".*"]
+                  :access-control-allow-credentials "true"
+                  :access-control-allow-methods [:get :post :put :delete]))
       (rd/wrap-defaults (-> rd/site-defaults
                             (assoc-in [:security :anti-forgery] false)
                             (assoc-in [:responses :absolute-redirects] true)
@@ -35,6 +40,10 @@
   (-> handler
       muuntaja/wrap-params
       muuntaja/wrap-format
+      (#(wrap-cors %
+                   :access-control-allow-origin [#".*"]
+                   :access-control-allow-credentials "true"
+                   :access-control-allow-methods [:get :post :put :delete]))
       (rd/wrap-defaults rd/api-defaults)))
 
 (defn wrap-base-defaults [handler]
